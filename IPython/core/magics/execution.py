@@ -41,9 +41,9 @@ from logging import error
 from io import StringIO
 from pathlib import Path
 
-if sys.version_info > (3,8):
+if sys.version_info > (3, 8):
     from ast import Module
-else :
+else:
     # mock the new API, ignore second argument
     # see https://github.com/ipython/ipython/issues/11590
     from ast import Module as OriginalModule
@@ -76,7 +76,7 @@ class TimeitResult(object):
         self.all_runs = all_runs
         self.compile_time = compile_time
         self._precision = precision
-        self.timings = [ dt / self.loops for dt in all_runs]
+        self.timings = [dt / self.loops for dt in all_runs]
 
     @property
     def average(self):
@@ -97,17 +97,17 @@ class TimeitResult(object):
                 pass
         return (
             u"{mean} {pm} {std} per loop (mean {pm} std. dev. of {runs} run{run_plural}, {loops} loop{loop_plural} each)"
-                .format(
-                    pm = pm,
-                    runs = self.repeat,
-                    loops = self.loops,
-                    loop_plural = "" if self.loops == 1 else "s",
-                    run_plural = "" if self.repeat == 1 else "s",
-                    mean = _format_time(self.average, self._precision),
-                    std = _format_time(self.stdev, self._precision))
-                )
+            .format(
+                pm=pm,
+                runs=self.repeat,
+                loops=self.loops,
+                loop_plural="" if self.loops == 1 else "s",
+                run_plural="" if self.repeat == 1 else "s",
+                mean=_format_time(self.average, self._precision),
+                std=_format_time(self.stdev, self._precision))
+        )
 
-    def _repr_pretty_(self, p , cycle):
+    def _repr_pretty_(self, p, cycle):
         unic = self.__str__()
         p.text(u'<TimeitResult : '+unic+u'>')
 
@@ -139,7 +139,7 @@ class TimeitTemplateFiller(ast.NodeTransformer):
 
 class Timer(timeit.Timer):
     """Timer class that explicitly uses self.inner
-    
+
     which is an undocumented implementation detail of CPython,
     not shared by PyPy.
     """
@@ -359,12 +359,12 @@ class ExecutionMagics(Magics):
         text_file = opts.T[0]
         if dump_file:
             prof.dump_stats(dump_file)
-            print('\n*** Profile stats marshalled to file',\
-                  repr(dump_file)+'.',sys_exit)
+            print('\n*** Profile stats marshalled to file',
+                  repr(dump_file)+'.', sys_exit)
         if text_file:
             Path(text_file).write_text(output)
-            print('\n*** Profile printout saved to text file',\
-                  repr(text_file)+'.',sys_exit)
+            print('\n*** Profile printout saved to text file',
+                  repr(text_file)+'.', sys_exit)
 
         if 'r' in opts:
             return stats
@@ -393,10 +393,10 @@ class ExecutionMagics(Magics):
 
         if par:
             try:
-                new_pdb = {'off':0,'0':0,'on':1,'1':1}[par]
+                new_pdb = {'off': 0, '0': 0, 'on': 1, '1': 1}[par]
             except KeyError:
-                print ('Incorrect argument. Use on/1, off/0, '
-                       'or nothing for a toggle.')
+                print('Incorrect argument. Use on/1, off/0, '
+                      'or nothing for a toggle.')
                 return
         else:
             # toggle
@@ -404,16 +404,18 @@ class ExecutionMagics(Magics):
 
         # set on the shell
         self.shell.call_pdb = new_pdb
-        print('Automatic pdb calling has been turned',on_off(new_pdb))
+        print('Automatic pdb calling has been turned', on_off(new_pdb))
 
     @skip_doctest
     @magic_arguments.magic_arguments()
-    @magic_arguments.argument('--breakpoint', '-b', metavar='FILE:LINE',
+    @magic_arguments.argument(
+        '--breakpoint', '-b', metavar='FILE:LINE',
         help="""
         Set break point at LINE in FILE.
         """
     )
-    @magic_arguments.argument('statement', nargs='*',
+    @magic_arguments.argument(
+        'statement', nargs='*',
         help="""
         Code to run in debugger.
         You can omit this in cell magic mode.
@@ -488,8 +490,8 @@ class ExecutionMagics(Magics):
             # Switch exception reporting mode for this one call.
             # Ensure it is switched back.
             def xmode_switch_err(name):
-                warn('Error changing %s exception modes.\n%s' %
-                    (name,sys.exc_info()[1]))
+                warn('Error changing %s exception modes.\n%s'
+                     % (name, sys.exc_info()[1]))
 
             new_mode = s.strip().capitalize()
             original_mode = interactive_tb.mode
@@ -508,11 +510,11 @@ class ExecutionMagics(Magics):
     @skip_doctest
     @line_magic
     def run(self, parameter_s='', runner=None,
-                  file_finder=get_py_filename):
+            file_finder=get_py_filename):
         """Run the named file inside IPython as a program.
 
         Usage::
-        
+
           %run [-n -i -e -G]
                [( -t [-N<N>] | -d [-b<N>] | -p [profile options] )]
                ( -m mod | file ) [args]
@@ -542,7 +544,7 @@ class ExecutionMagics(Magics):
         *two* back slashes (e.g. ``\\\\*``) to suppress expansions.
         To completely disable these expansions, you can use -G flag.
 
-        On Windows systems, the use of single quotes `'` when specifying 
+        On Windows systems, the use of single quotes `'` when specifying
         a file is not supported. Use double quotes `"`.
 
         Options:
@@ -677,11 +679,11 @@ class ExecutionMagics(Magics):
             modulename = opts["m"][0]
             modpath = find_mod(modulename)
             if modpath is None:
-                msg = '%r is not a valid modulename on sys.path'%modulename
+                msg = '%r is not a valid modulename on sys.path' % modulename
                 raise Exception(msg)
             arg_lst = [modpath] + arg_lst
         try:
-            fpath = None # initialize to make sure fpath is in scope later
+            fpath = None  # initialize to make sure fpath is in scope later
             fpath = arg_lst[0]
             filename = file_finder(fpath)
         except IndexError as e:
@@ -692,7 +694,7 @@ class ExecutionMagics(Magics):
                 msg = str(e)
             except UnicodeError:
                 msg = e.message
-            if os.name == 'nt' and re.match(r"^'.*'$",fpath):
+            if os.name == 'nt' and re.match(r"^'.*'$", fpath):
                 warn('For Windows, use double quotes to wrap a filename: %run "mypath\\myfile.py"')
             raise Exception(msg) from e
         except TypeError:
@@ -712,7 +714,7 @@ class ExecutionMagics(Magics):
 
         # Make sure that the running script gets a proper sys.argv as if it
         # were run from a system shell.
-        save_argv = sys.argv # save it for later restoring
+        save_argv = sys.argv  # save it for later restoring
 
         if 'G' in opts:
             args = arg_lst[1:]
@@ -802,7 +804,7 @@ class ExecutionMagics(Magics):
 
                         def run():
                             runner(filename, prog_ns, prog_ns,
-                                    exit_ignore=exit_ignore)
+                                   exit_ignore=exit_ignore)
 
                     if 't' in opts:
                         # timed execution
@@ -940,7 +942,6 @@ class ExecutionMagics(Magics):
                     break
                 finally:
                     sys.settrace(trace)
-            
 
         except:
             etype, value, tb = sys.exc_info()
@@ -1070,7 +1071,7 @@ class ExecutionMagics(Magics):
                                         posix=False, strict=False)
         if stmt == "" and cell is None:
             return
-        
+
         timefunc = timeit.default_timer
         number = int(getattr(opts, "n", 0))
         default_repeat = 7 if timeit.default_repeat < 7 else timeit.default_repeat
@@ -1087,7 +1088,7 @@ class ExecutionMagics(Magics):
         # this code has tight coupling to the inner workings of timeit.Timer,
         # but is there a better way to achieve that the code stmt has access
         # to the shell namespace?
-        transform  = self.shell.transform_cell
+        transform = self.shell.transform_cell
 
         if cell is None:
             # called as line magic
@@ -1138,7 +1139,7 @@ class ExecutionMagics(Magics):
                 if var_name in local_ns:
                     conflict_globs[var_name] = var_val
             glob.update(local_ns)
-            
+
         exec(code, glob, ns)
         timer.inner = ns["inner"]
 
@@ -1160,9 +1161,9 @@ class ExecutionMagics(Magics):
 
         # Restore global vars from conflict_globs
         if conflict_globs:
-           glob.update(conflict_globs)
-                
-        if not quiet :
+            glob.update(conflict_globs)
+
+        if not quiet:
             # Check best timing is greater than zero to avoid a
             # ZeroDivisionError.
             # In cases where the slowest timing is lesser than a microsecond
@@ -1172,8 +1173,8 @@ class ExecutionMagics(Magics):
                 print("The slowest run took %0.2f times longer than the "
                       "fastest. This could mean that an intermediate result "
                       "is being cached." % (worst / best))
-           
-            print( timeit_result )
+
+            print(timeit_result)
 
             if tc > tc_min:
                 print("Compiler time: %.2f s" % tc)
@@ -1184,13 +1185,13 @@ class ExecutionMagics(Magics):
     @no_var_expand
     @needs_local_scope
     @line_cell_magic
-    def time(self,line='', cell=None, local_ns=None):
+    def time(self, line='', cell=None, local_ns=None):
         """Time execution of a Python statement or expression.
 
         The CPU and wall clock times are printed, and the value of the
         expression (if any) is returned.  Note that under Win32, system time
         is always reported as 0, since it can not be measured.
-        
+
         This function can be used both as a line and cell magic:
 
         - In line mode you can time a single-line statement (though multiple
@@ -1244,10 +1245,10 @@ class ExecutionMagics(Magics):
           """
 
         # fail immediately if the given expression can't be compiled
-        
+
         if line and cell:
             raise UsageError("Can't use statement directly after '%%time'!")
-        
+
         if cell:
             expr = self.shell.transform_cell(cell)
         else:
@@ -1266,8 +1267,8 @@ class ExecutionMagics(Magics):
         # Minimum time above which compilation time will be reported
         tc_min = 0.1
 
-        expr_val=None
-        if len(expr_ast.body)==1 and isinstance(expr_ast.body[0], ast.Expr):
+        expr_val = None
+        if len(expr_ast.body) == 1 and isinstance(expr_ast.body[0], ast.Expr):
             mode = 'eval'
             source = '<timed eval>'
             expr_ast = ast.Expression(expr_ast.body[0].value)
@@ -1276,7 +1277,7 @@ class ExecutionMagics(Magics):
             source = '<timed exec>'
             # multi-line %%time case
             if len(expr_ast.body) > 1 and isinstance(expr_ast.body[-1], ast.Expr):
-                expr_val= expr_ast.body[-1]
+                expr_val = expr_ast.body[-1]
                 expr_ast = expr_ast.body[:-1]
                 expr_ast = Module(expr_ast, [])
                 expr_val = ast.Expression(expr_val.value)
@@ -1290,7 +1291,7 @@ class ExecutionMagics(Magics):
         wtime = time.time
         # time execution
         wall_st = wtime()
-        if mode=='eval':
+        if mode == 'eval':
             st = clock2()
             try:
                 out = eval(code, glob, local_ns)
@@ -1302,7 +1303,7 @@ class ExecutionMagics(Magics):
             st = clock2()
             try:
                 exec(code, glob, local_ns)
-                out=None
+                out = None
                 # multi-line %%time case
                 if expr_val is not None:
                     code_2 = self.shell.compile(expr_val, source, 'eval')
@@ -1318,10 +1319,10 @@ class ExecutionMagics(Magics):
         cpu_user = end[0]-st[0]
         cpu_sys = end[1]-st[1]
         cpu_tot = cpu_user+cpu_sys
-        # On windows cpu_sys is always zero, so no new information to the next print 
+        # On windows cpu_sys is always zero, so no new information to the next print
         if sys.platform != 'win32':
-            print("CPU times: user %s, sys: %s, total: %s" % \
-                (_format_time(cpu_user),_format_time(cpu_sys),_format_time(cpu_tot)))
+            print("CPU times: user %s, sys: %s, total: %s"
+                  % (_format_time(cpu_user), _format_time(cpu_sys), _format_time(cpu_tot)))
         print("Wall time: %s" % _format_time(wall_time))
         if tc > tc_min:
             print("Compiler : %s" % _format_time(tc))
@@ -1344,9 +1345,9 @@ class ExecutionMagics(Magics):
           so that magics are loaded in their transformed version to valid
           Python.  If this option is given, the raw input as typed at the
           command line is used instead.
-          
-          -q: quiet macro definition.  By default, a tag line is printed 
-          to indicate the macro has been created, and then the contents of 
+
+          -q: quiet macro definition.  By default, a tag line is printed
+          to indicate the macro has been created, and then the contents of
           the macro are printed.  If this option is given, then no printout
           is produced once the macro is created.
 
@@ -1392,9 +1393,9 @@ class ExecutionMagics(Magics):
           print macro_name
 
         """
-        opts,args = self.parse_options(parameter_s,'rq',mode='list')
+        opts, args = self.parse_options(parameter_s, 'rq', mode='list')
         if not args:   # List existing macros
-            return sorted(k for k,v in self.shell.user_ns.items() if isinstance(v, Macro))
+            return sorted(k for k, v in self.shell.user_ns.items() if isinstance(v, Macro))
         if len(args) == 1:
             raise UsageError(
                 "%macro insufficient args; usage '%macro name n1-n2 n3-4...")
@@ -1407,13 +1408,14 @@ class ExecutionMagics(Magics):
             return
         macro = Macro(lines)
         self.shell.define_macro(name, macro)
-        if not ( 'q' in opts) : 
+        if not ('q' in opts):
             print('Macro `%s` created. To execute, type its name (without quotes).' % name)
             print('=== Macro contents: ===')
             print(macro, end=' ')
 
     @magic_arguments.magic_arguments()
-    @magic_arguments.argument('output', type=str, default='', nargs='?',
+    @magic_arguments.argument(
+        'output', type=str, default='', nargs='?',
         help="""The name of the variable in which to store output.
         This is a utils.io.CapturedIO object with stdout/err attributes
         for the text of the captured output.
@@ -1425,13 +1427,16 @@ class ExecutionMagics(Magics):
         If unspecified, captured output is discarded.
         """
     )
-    @magic_arguments.argument('--no-stderr', action="store_true",
+    @magic_arguments.argument(
+        '--no-stderr', action="store_true",
         help="""Don't capture stderr."""
     )
-    @magic_arguments.argument('--no-stdout', action="store_true",
+    @magic_arguments.argument(
+        '--no-stdout', action="store_true",
         help="""Don't capture stdout."""
     )
-    @magic_arguments.argument('--no-display', action="store_true",
+    @magic_arguments.argument(
+        '--no-display', action="store_true",
         help="""Don't capture IPython's rich display."""
     )
     @cell_magic
@@ -1446,6 +1451,7 @@ class ExecutionMagics(Magics):
         if args.output:
             self.shell.user_ns[args.output] = io
 
+
 def parse_breakpoint(text, current_file):
     '''Returns (file, line) for file:line and (current_file, line) for line'''
     colon = text.find(':')
@@ -1453,14 +1459,15 @@ def parse_breakpoint(text, current_file):
         return current_file, int(text)
     else:
         return text[:colon], int(text[colon+1:])
-    
+
+
 def _format_time(timespan, precision=3):
     """Formats the timespan in a human readable form"""
 
     if timespan >= 60.0:
         # we have more than a minute, format that in a human readable form
         # Idea from http://snipplr.com/view/5713/
-        parts = [("d", 60*60*24),("h", 60*60),("min", 60), ("s", 1)]
+        parts = [("d", 60*60*24), ("h", 60*60), ("min", 60), ("s", 1)]
         time = []
         leftover = timespan
         for suffix, length in parts:
@@ -1472,21 +1479,20 @@ def _format_time(timespan, precision=3):
                 break
         return " ".join(time)
 
-    
     # Unfortunately the unicode 'micro' symbol can cause problems in
-    # certain terminals.  
+    # certain terminals.
     # See bug: https://bugs.launchpad.net/ipython/+bug/348466
     # Try to prevent crashes by being more secure than it needs to
     # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
-    units = [u"s", u"ms",u'us',"ns"] # the save value   
+    units = [u"s", u"ms", u'us', "ns"]  # the save value
     if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
         try:
             u'\xb5'.encode(sys.stdout.encoding)
-            units = [u"s", u"ms",u'\xb5s',"ns"]
+            units = [u"s", u"ms", u'\xb5s', "ns"]
         except:
             pass
     scaling = [1, 1e3, 1e6, 1e9]
-        
+
     if timespan > 0.0:
         order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
     else:
