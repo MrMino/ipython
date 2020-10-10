@@ -1400,7 +1400,6 @@ class ExecutionMagics(Magics):
                 "%macro insufficient args; usage '%macro name n1-n2 n3-4...")
         name, codefrom = args[0], " ".join(args[1:])
 
-        #print 'rng',ranges  # dbg
         try:
             lines = self.shell.find_user_code(codefrom, 'r' in opts)
         except (ValueError, TypeError) as e:
