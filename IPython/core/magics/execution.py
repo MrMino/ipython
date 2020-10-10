@@ -22,7 +22,6 @@ from pdb import Restart
 import cProfile as profile
 import pstats
 
-from IPython.core import oinspect
 from IPython.core import magic_arguments
 from IPython.core import page
 from IPython.core.error import UsageError
